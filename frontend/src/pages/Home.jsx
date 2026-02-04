@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, Github, Linkedin, Mail } from 'lucide-react'
+import { ArrowRight, Code2, Coffee, Cpu, Database, Github, LayoutGrid, Linkedin, Mail } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Container from '../components/Container'
@@ -39,10 +39,45 @@ function SocialLink({ href, label, icon: Icon }) {
 
 function SkillPill({ children }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-zinc-200 bg-white/80 px-3 py-1 text-xs font-medium text-zinc-700 dark:border-zinc-800 dark:bg-zinc-950/50 dark:text-zinc-300">
+    <span className="inline-flex items-center rounded-full border border-zinc-200/70 bg-white/70 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm transition hover:bg-white dark:border-zinc-800/70 dark:bg-zinc-950/40 dark:text-zinc-300 dark:hover:bg-zinc-950">
       {children}
     </span>
   )
+}
+
+const LEVEL_META = {
+  Avançado: {
+    score: 4,
+    pill: 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100',
+  },
+  Sólido: {
+    score: 3,
+    pill: 'border-indigo-200 bg-indigo-50 text-indigo-900 dark:border-indigo-900/40 dark:bg-indigo-950/30 dark:text-indigo-100',
+  },
+  'Em desenvolvimento': {
+    score: 2,
+    pill: 'border-amber-200 bg-amber-50 text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100',
+  },
+  'Em evolução': {
+    score: 2,
+    pill: 'border-sky-200 bg-sky-50 text-sky-950 dark:border-sky-900/40 dark:bg-sky-950/30 dark:text-sky-100',
+  },
+}
+
+const SKILL_META = {
+  python: { Icon: Code2, gradient: 'from-indigo-500 to-cyan-400' },
+  data: { Icon: Database, gradient: 'from-emerald-500 to-teal-400' },
+  cpp: { Icon: Cpu, gradient: 'from-fuchsia-500 to-pink-400' },
+  java: { Icon: Coffee, gradient: 'from-amber-500 to-orange-400' },
+  frontend: { Icon: LayoutGrid, gradient: 'from-sky-500 to-indigo-400' },
+}
+
+const PROGRESS_WIDTH = {
+  4: 'w-full',
+  3: 'w-3/4',
+  2: 'w-1/2',
+  1: 'w-1/4',
+  0: 'w-0',
 }
 
 export default function Home() {
@@ -173,29 +208,84 @@ export default function Home() {
       <section className="mt-14">
         <div className="max-w-2xl">
           <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Skills
+            Competências
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-            Minhas áreas de foco hoje (e o que eu gosto de estudar).
+            O que eu uso no dia a dia e o que estou evoluindo.
           </p>
         </div>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {SKILL_SECTIONS.map((section) => (
-            <div
-              key={section.title}
-              className="rounded-2xl border border-zinc-200/60 bg-white/70 p-6 shadow-sm backdrop-blur dark:border-zinc-800/60 dark:bg-zinc-950/40"
-            >
-              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-                {section.title}
-              </h3>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {section.items.map((item) => (
-                  <SkillPill key={item}>{item}</SkillPill>
-                ))}
-              </div>
-            </div>
-          ))}
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {SKILL_SECTIONS.map((section, idx) => {
+            const meta = SKILL_META[section.id] ?? SKILL_META.python
+            const levelMeta = LEVEL_META[section.level] ?? LEVEL_META['Em evolução']
+            const widthClass = PROGRESS_WIDTH[levelMeta.score] ?? PROGRESS_WIDTH[0]
+            const Icon = meta.Icon
+
+            return (
+              <motion.div
+                key={section.id ?? section.title}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 0.28, delay: Math.min(idx * 0.05, 0.25) }}
+                className="group relative overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/70 p-6 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md dark:border-zinc-800/60 dark:bg-zinc-950/40 dark:hover:border-zinc-700"
+              >
+                <div className={cn('absolute inset-x-0 top-0 h-1 bg-gradient-to-r', meta.gradient)} />
+
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <span
+                      className={cn(
+                        'grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br text-white shadow-sm ring-1 ring-black/5',
+                        meta.gradient,
+                      )}
+                    >
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </span>
+
+                    <div>
+                      <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+                        {section.title}
+                      </h3>
+                      {section.description ? (
+                        <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                          {section.description}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  {section.level ? (
+                    <span
+                      className={cn(
+                        'inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold',
+                        levelMeta.pill,
+                      )}
+                    >
+                      {section.level}
+                    </span>
+                  ) : null}
+                </div>
+
+                <div className="mt-4">
+                  <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                    <span>Proficiência</span>
+                    <span>{levelMeta.score}/4</span>
+                  </div>
+                  <div className="mt-2 h-2 w-full rounded-full bg-zinc-200/70 dark:bg-zinc-800/70">
+                    <div className={cn('h-2 rounded-full bg-gradient-to-r', meta.gradient, widthClass)} />
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {section.items.map((item) => (
+                    <SkillPill key={item}>{item}</SkillPill>
+                  ))}
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
       </section>
     </Container>
