@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, Code2, Coffee, Cpu, Database, Github, LayoutGrid, Linkedin, Mail } from 'lucide-react'
+import { ArrowRight, Cloud, Code2, Coffee, Cpu, Database, Github, Linkedin, Mail, Workflow } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Container from '../components/Container'
@@ -66,10 +66,11 @@ const LEVEL_META = {
 
 const SKILL_META = {
   python: { Icon: Code2, gradient: 'from-indigo-500 to-cyan-400' },
+  dataeng: { Icon: Workflow, gradient: 'from-violet-500 to-fuchsia-400' },
+  cloud: { Icon: Cloud, gradient: 'from-orange-500 to-amber-400' },
   data: { Icon: Database, gradient: 'from-emerald-500 to-teal-400' },
   cpp: { Icon: Cpu, gradient: 'from-fuchsia-500 to-pink-400' },
   java: { Icon: Coffee, gradient: 'from-amber-500 to-orange-400' },
-  frontend: { Icon: LayoutGrid, gradient: 'from-sky-500 to-indigo-400' },
 }
 
 const PROGRESS_WIDTH = {
