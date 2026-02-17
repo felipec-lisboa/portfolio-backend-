@@ -12,6 +12,8 @@ jobs:
   deploy-prod:
     runs-on: ubuntu-latest
     environment: production
+    env:
+      PROD_DEPLOY_WEBHOOK_URL: ${{ secrets.PROD_DEPLOY_WEBHOOK_URL }}
     defaults:
       run:
         working-directory: frontend
@@ -47,9 +49,9 @@ jobs:
           if-no-files-found: error
 
       - name: Deploy hook (optional)
-        if: ${{ secrets.PROD_DEPLOY_WEBHOOK_URL != '' }}
-        run: curl -fsSL -X POST "${{ secrets.PROD_DEPLOY_WEBHOOK_URL }}"
+        if: ${{ env.PROD_DEPLOY_WEBHOOK_URL != '' }}
+        run: curl -fsSL -X POST "$PROD_DEPLOY_WEBHOOK_URL"
 
       - name: Deploy hook missing
-        if: ${{ secrets.PROD_DEPLOY_WEBHOOK_URL == '' }}
+        if: ${{ env.PROD_DEPLOY_WEBHOOK_URL == '' }}
         run: echo "PROD_DEPLOY_WEBHOOK_URL não configurado. Build gerado sem deploy."
