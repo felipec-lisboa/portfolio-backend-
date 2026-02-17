@@ -18,6 +18,16 @@ npm run dev
 
 Mais detalhes e configuração de API no `frontend/README.md`.
 
+## Padrão CI/CD (dev e prod)
+
+Pipelines disponíveis em `.github/workflows`:
+
+- `frontend-ci.yml`: validação (lint + build) em PR e push para `main/develop`.
+- `frontend-cd-dev.yml`: build/deploy de desenvolvimento para branch `develop` (`environment: development`).
+- `frontend-cd-prod.yml`: build/deploy de produção para branch `main` (`environment: production`).
+
+Para diferenciar ambiente dentro do app frontend, use `VITE_APP_ENV` (`dev`, `staging`, `prod`).
+
 ## Backend (Java)
 
 Em breve: API CRUD de projetos + ingestão de dados do GitHub + analytics do site.

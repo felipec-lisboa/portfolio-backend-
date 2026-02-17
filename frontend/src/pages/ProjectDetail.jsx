@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getProject } from '../api/projects'
 import Container from '../components/Container'
 import { PROFILE } from '../data/profile'
+import { hasMeaningfulUrl } from '../lib/portfolioDataGuards'
 
 function Badge({ children }) {
   return (
@@ -77,6 +78,9 @@ export default function ProjectDetail() {
     )
   }
 
+  const hasRepo = hasMeaningfulUrl(project.links?.repo)
+  const hasDemo = hasMeaningfulUrl(project.links?.demo)
+
   return (
     <Container>
       <Link
@@ -99,24 +103,28 @@ export default function ProjectDetail() {
           </div>
 
           <div className="flex items-center gap-2">
-            <a
-              href={project.links.repo}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white/80 px-4 py-2 text-sm font-semibold text-zinc-900 shadow-sm backdrop-blur transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-50 dark:hover:bg-zinc-950 dark:focus-visible:ring-offset-zinc-950"
-            >
-              <Github className="h-4 w-4" aria-hidden="true" />
-              Repo
-            </a>
-            <a
-              href={project.links.demo}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white dark:focus-visible:ring-offset-zinc-950"
-            >
-              <ExternalLink className="h-4 w-4" aria-hidden="true" />
-              Demo
-            </a>
+            {hasRepo ? (
+              <a
+                href={project.links.repo}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white/80 px-4 py-2 text-sm font-semibold text-zinc-900 shadow-sm backdrop-blur transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-50 dark:hover:bg-zinc-950 dark:focus-visible:ring-offset-zinc-950"
+              >
+                <Github className="h-4 w-4" aria-hidden="true" />
+                Repo
+              </a>
+            ) : null}
+            {hasDemo ? (
+              <a
+                href={project.links.demo}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white dark:focus-visible:ring-offset-zinc-950"
+              >
+                <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                Demo
+              </a>
+            ) : null}
           </div>
         </div>
 

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { sendContactMessage } from '../api/contact'
 import Container from '../components/Container'
 import { PROFILE } from '../data/profile'
+import { hasMeaningfulEmail } from '../lib/portfolioDataGuards'
 
 function Field({ label, children, hint }) {
   return (
@@ -24,6 +25,7 @@ export default function Contact() {
   }, [])
 
   const email = PROFILE.email
+  const hasDirectEmail = hasMeaningfulEmail(email)
 
   const [name, setName] = useState('')
   const [from, setFrom] = useState('')
@@ -32,12 +34,13 @@ export default function Contact() {
   const [delivered, setDelivered] = useState(false)
 
   const mailtoHref = useMemo(() => {
+    if (!hasDirectEmail) return '#'
     const subject = encodeURIComponent(`Contato pelo portfólio — ${name || 'Olá'}`)
     const body = encodeURIComponent(
       `Nome: ${name || '-'}\nEmail: ${from || '-'}\n\nMensagem:\n${message || '-'}`,
     )
     return `mailto:${email}?subject=${subject}&body=${body}`
-  }, [email, name, from, message])
+  }, [email, hasDirectEmail, name, from, message])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -113,11 +116,22 @@ export default function Contact() {
               <a
                 href={mailtoHref}
                 className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white/80 px-5 py-2.5 text-sm font-semibold text-zinc-900 shadow-sm backdrop-blur transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-50 dark:hover:bg-zinc-950 dark:focus-visible:ring-offset-zinc-950"
+                aria-disabled={!hasDirectEmail}
+                onClick={(e) => {
+                  if (!hasDirectEmail) e.preventDefault()
+                }}
               >
                 <Mail className="h-4 w-4" aria-hidden="true" />
                 Abrir no email
               </a>
             </div>
+
+            {!hasDirectEmail ? (
+              <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100">
+                Configure um email real em `src/data/profile.js` para ativar o
+                contato direto.
+              </div>
+            ) : null}
 
             {status === 'sent' ? (
               <div className="mt-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100">
@@ -139,12 +153,16 @@ export default function Contact() {
               Email direto
             </h2>
             <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
-              <a
-                className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-cyan-300 dark:hover:text-cyan-200"
-                href={`mailto:${email}`}
-              >
-                {email}
-              </a>
+              {hasDirectEmail ? (
+                <a
+                  className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-cyan-300 dark:hover:text-cyan-200"
+                  href={`mailto:${email}`}
+                >
+                  {email}
+                </a>
+              ) : (
+                <span>Não configurado</span>
+              )}
             </p>
           </div>
 

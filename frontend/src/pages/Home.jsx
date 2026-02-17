@@ -8,6 +8,7 @@ import { PROFILE } from '../data/profile'
 import { PROJECTS } from '../data/projects'
 import { SKILL_SECTIONS } from '../data/skills'
 import { cn } from '../lib/cn'
+import { hasMeaningfulEmail, hasMeaningfulUrl } from '../lib/portfolioDataGuards'
 
 function Stat({ label, value }) {
   return (
@@ -82,6 +83,10 @@ const PROGRESS_WIDTH = {
 }
 
 export default function Home() {
+  const hasGithub = hasMeaningfulUrl(PROFILE.socials.github)
+  const hasLinkedin = hasMeaningfulUrl(PROFILE.socials.linkedin)
+  const hasEmail = hasMeaningfulEmail(PROFILE.email)
+
   useEffect(() => {
     document.title = `Início | ${PROFILE.displayName}`
   }, [])
@@ -140,21 +145,27 @@ export default function Home() {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <SocialLink
-              href={PROFILE.socials.github}
-              label="GitHub"
-              icon={Github}
-            />
-            <SocialLink
-              href={PROFILE.socials.linkedin}
-              label="LinkedIn"
-              icon={Linkedin}
-            />
-            <SocialLink
-              href={`mailto:${PROFILE.email}`}
-              label="Email"
-              icon={Mail}
-            />
+            {hasGithub ? (
+              <SocialLink
+                href={PROFILE.socials.github}
+                label="GitHub"
+                icon={Github}
+              />
+            ) : null}
+            {hasLinkedin ? (
+              <SocialLink
+                href={PROFILE.socials.linkedin}
+                label="LinkedIn"
+                icon={Linkedin}
+              />
+            ) : null}
+            {hasEmail ? (
+              <SocialLink
+                href={`mailto:${PROFILE.email}`}
+                label="Email"
+                icon={Mail}
+              />
+            ) : null}
           </div>
         </motion.section>
 

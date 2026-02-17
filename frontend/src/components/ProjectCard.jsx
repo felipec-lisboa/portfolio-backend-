@@ -1,5 +1,6 @@
 import { ExternalLink, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { hasMeaningfulUrl } from '../lib/portfolioDataGuards'
 
 function Badge({ children }) {
   return (
@@ -10,6 +11,9 @@ function Badge({ children }) {
 }
 
 export default function ProjectCard({ project }) {
+  const hasRepo = hasMeaningfulUrl(project.links?.repo)
+  const hasDemo = hasMeaningfulUrl(project.links?.demo)
+
   return (
     <div className="group rounded-2xl border border-zinc-200/60 bg-white/70 p-6 shadow-sm backdrop-blur transition hover:shadow-md dark:border-zinc-800/60 dark:bg-zinc-950/40">
       <div className="flex items-start justify-between gap-4">
@@ -28,7 +32,7 @@ export default function ProjectCard({ project }) {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          {project.links?.repo ? (
+          {hasRepo ? (
             <a
               href={project.links.repo}
               target="_blank"
@@ -40,7 +44,7 @@ export default function ProjectCard({ project }) {
             </a>
           ) : null}
 
-          {project.links?.demo ? (
+          {hasDemo ? (
             <a
               href={project.links.demo}
               target="_blank"

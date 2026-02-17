@@ -47,8 +47,41 @@ Se você tiver o backend Java rodando, configure a variável `VITE_API_URL`.
 2) Preencha, por exemplo:
 
 ```bash
+VITE_APP_ENV=dev
 VITE_API_URL=http://localhost:8080
 ```
+
+Ambientes aceitos:
+
+- `VITE_APP_ENV=dev`
+- `VITE_APP_ENV=staging`
+- `VITE_APP_ENV=prod`
+
+Quando não definido, o app assume `dev`.
+
+### CI/CD e ambientes
+
+No GitHub Actions, configure por ambiente:
+
+- Variables:
+  - `VITE_API_URL`
+- Secrets (opcional, para deploy automático):
+  - `DEV_DEPLOY_WEBHOOK_URL`
+  - `PROD_DEPLOY_WEBHOOK_URL`
+
+Sugestão de fluxo:
+
+- `develop` -> deploy de desenvolvimento
+- `main` -> deploy de produção
+
+## SEO / Social preview
+
+No `index.html`, os metadados sociais usam URLs padrão:
+
+- `https://seu-dominio.com/`
+- `https://seu-dominio.com/og-image.png`
+
+Antes de publicar, troque pelos seus links reais para melhorar preview no LinkedIn/X/WhatsApp.
 
 Endpoints esperados (quando houver backend):
 
